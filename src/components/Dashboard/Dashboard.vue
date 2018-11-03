@@ -28,8 +28,42 @@
         </div>
       </nav>
     </div>
-    <div class="quadro">
-      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalLanc">Novo Lançamento</button>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm quadro">
+          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalLanc">Novo Lançamento</button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm">
+          <ul class="nav nav-tabs">
+            <li class="nav-item">
+              <a class="nav-link active" id="pills_conta_corrente_tab" data-toggle="pill" href="#pills_conta_corrente" role="tab" aria-controls="pills_conta_corrente" aria-selected="true">Conta Corrente</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="pills_conta_poupanca_tab" data-toggle="pill" href="#pills_conta_poupanca" role="tab" aria-controls="pills_conta_poupanca" aria-selected="false">Poupança</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="pills_lancamento_tab" data-toggle="pill" href="#pills_lancamento" role="tab" aria-controls="pills_lancamento" aria-selected="false">Lançamentos</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm">
+          <div class="tab-content" id="pills-tabContent">
+            <div class="tab-pane fade show active" id="pills_conta_corrente" role="tabpanel" aria-labelledby="pills_conta_corrente_tab">
+              teste 01
+            </div>
+            <div class="tab-pane fade" id="pills_conta_poupanca" role="tabpanel" aria-labelledby="pills_conta_poupanca_tab">
+              teste 02
+            </div>
+            <div class="tab-pane fade" id="pills_lancamento" role="tabpanel" aria-labelledby="pills_lancamento_tab">
+              <ListaLancto />
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
     <CadastroBanco />
     <CadastroConta />
@@ -47,6 +81,7 @@ import Conta from '../Conta/Conta'
 import SubGrupo from '../SubGrupo/SubGrupo'
 import Grupo from '../Grupo/Grupo'
 import Lancamento from '../Lancamento/Lancamento'
+import ListaLancto from '../Lancamento/ListaLancto'
 
 export default {
   name: 'Dashboard',
@@ -81,7 +116,8 @@ export default {
     CadastroConta: Conta,
     CadastroSubGrupo: SubGrupo,
     CadastroGrupo: Grupo,
-    Lancamento: Lancamento
+    Lancamento: Lancamento,
+    ListaLancto: ListaLancto
   }
 }
 </script>
@@ -91,4 +127,9 @@ export default {
 .quadro {
   margin: 5px
 }
+
+.abas {
+  padding: 20px;
+}
+
 </style>
