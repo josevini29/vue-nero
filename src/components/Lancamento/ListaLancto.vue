@@ -4,8 +4,20 @@
       <div class="progress barra-progresso" v-if="inProgress">
         <div class="progress-bar bg-info" role="progressbar" :style="'width: ' + vlPercentual + '%;'" :aria-valuenow="vlPercentual" aria-valuemin="0" aria-valuemax="100">{{vlPercentual}}%</div>
       </div>
-      <div class="botao-refresh" v-else>
-        <button type="button" class="btn btn-info" @click="carregarLancamentos()">Atualizar <i class="fas fa-sync-alt"></i></button>
+      <div class="container-fluid botao-refresh" v-else>
+        <div class="row">
+          <div class="col-sm-1">
+            <select class="form-control" v-model="cdMes">
+              <option v-for="(mes, index) in meses" v-bind:key="index" :value="mes.cdMes">{{mes.dsMes}}</option>
+            </select>
+          </div>
+          <div class="input-ano col-sm-1">
+            <input type="number" class="form-control" placeholder="Ano" v-model="nrAno"/>
+          </div>
+          <div class="col-sm-1">
+            <button type="button" class="btn btn-info" @click="carregarLancamentos()">Atualizar <i class="fas fa-sync-alt"></i></button>
+          </div>
+        </div>
       </div>
     </div>
     <table class="table table-hover">
@@ -22,13 +34,13 @@
       </thead>
       <tbody>
         <tr v-for="(lancto, index) in lancamentos" v-bind:key="index">
-          <th>{{lancto.dt_movto}}</th>
-          <th>{{lancto.ds_conta}}</th>
-          <th>{{lancto.ds_contadest}}</th>
-          <th>{{lancto.ds_grupo}}</th>
-          <th>{{lancto.ds_subgrupo}}</th>
-          <th>{{lancto.dt_transacao}}</th>
-          <th>{{lancto.vl_movto}}</th>
+          <td>{{lancto.dt_movto}}</td>
+          <td>{{lancto.ds_conta}}</td>
+          <td>{{lancto.ds_contadest}}</td>
+          <td>{{lancto.ds_grupo}}</td>
+          <td>{{lancto.ds_subgrupo}}</td>
+          <td>{{lancto.dt_transacao}}</td>
+          <td>{{lancto.vl_movto}}</td>
         </tr>
       </tbody>
     </table>
@@ -38,7 +50,7 @@
 <script>
 
 import * as firebase from 'firebase'
-import { formatarDataFirestore, formatarDataHoraFirestore } from '../Util/Data'
+import { formatarDataFirestore, formatarDataHoraFirestore, obterMeses, obterUltimoDiaMes } from '../Util/Data'
 import { formatarReal } from '../Util/Numero'
 
 export default {
@@ -47,6 +59,9 @@ export default {
     return {
       db: firebase.firestore(),
       lancamentos: [],
+      meses: obterMeses(),
+      cdMes: ((new Date().getMonth() + 1).toString().length === 1 ? '0' + (new Date().getMonth() + 1).toString() : (new Date().getMonth() + 1).toString()),
+      nrAno: new Date().getFullYear().toString(),
       vlPercentual: 0,
       inProgress: true
     }
@@ -60,12 +75,17 @@ export default {
     },
     carregarLancamentos: async function () {
       try {
+        let dtInicio = new Date(`${this.nrAno}-${this.cdMes}-01T00:00:00`)
+        let dtFim = new Date(`${this.nrAno}-${this.cdMes}-01T23:59:59`)
+        dtFim = obterUltimoDiaMes(dtFim)
+
         var arrayLanctos = []
         this.inProgress = true
         this.vlPercentual = 0
         const settings = {timestampsInSnapshots: true}
         this.db.settings(settings)
-        let response = await this.db.collection('lancamento').orderBy('dt_movto', 'desc').orderBy('dt_transacao', 'desc').get()
+        let response = await this.db.collection('lancamento').where('dt_movto', '>=', dtInicio).where('dt_movto', '<=', dtFim)
+          .orderBy('dt_movto', 'desc').orderBy('dt_transacao', 'desc').get()
         for (let i = 0; i < response.docs.length; i++) {
           this.vlPercentual = Math.round(((i + 1) / response.docs.length) * 100)
           let doc = response.docs[i]
@@ -78,14 +98,14 @@ export default {
           let responseSubGrupo = await this.db.collection('sub-grupo').doc(responseGrupo.data().subgrupo.id).get()
           const lancto = {
             id_lancamento: doc.id,
-            dt_movto: formatarDataFirestore(doc.data().dt_movto),
+            dt_movto: formatarDataFirestore(doc.data().dt_movto.toDate()),
             conta: doc.data().conta,
             ds_conta: (responseConta.data().tp_conta === 'C' ? 'Conta Corrente' : 'Poupança') + ' / ' + responseConta.data().cd_conta,
             ds_contadest: responseContaDest !== null ? (responseContaDest.data().tp_conta === 'C' ? 'Conta Corrente' : 'Poupança') + ' / ' + responseContaDest.data().cd_conta : '',
             grupo: doc.data().grupo,
             ds_grupo: responseGrupo.data().ds_grupo,
             ds_subgrupo: responseSubGrupo.data().ds_subgrupo,
-            dt_transacao: formatarDataHoraFirestore(doc.data().dt_transacao),
+            dt_transacao: formatarDataHoraFirestore(doc.data().dt_transacao.toDate()),
             vl_movto: formatarReal(doc.data().vl_movto)
           }
           arrayLanctos.push(lancto)
@@ -136,11 +156,14 @@ export default {
     margin-bottom: 10px;
   }
   .botao-refresh {
-    float: right;
+    margin-top: 10px;
     margin-bottom: 10px;
   }
   .barra-progresso {
     margin-top: 10px;
+  }
+  .input-ano {
+    width: 10px;
   }
 
 </style>

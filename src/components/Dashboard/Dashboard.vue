@@ -2,15 +2,12 @@
   <div>
     <div>
       <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <a class="navbar-brand" href="#">Dashboard</a>
+        <a class="navbar-brand" href="">Dashboard</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#corNavbar01" aria-controls="corNavbar01" aria-expanded="false" aria-label="Alterna navegação">
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="corNavbar01">
           <ul class="navbar-nav mr-auto">
-            <li class="nav-item">
-              <a class="nav-link" href="#">Lançamentos</a>
-            </li>
             <li class="nav-item">
               <a class="nav-link" data-toggle="modal" data-target="#modalCadBanco">Bancos</a>
             </li>
@@ -53,7 +50,7 @@
         <div class="col-sm">
           <div class="tab-content" id="pills-tabContent">
             <div class="tab-pane fade show active" id="pills_conta_corrente" role="tabpanel" aria-labelledby="pills_conta_corrente_tab">
-              teste 01
+              <GrafContaCorrente />
             </div>
             <div class="tab-pane fade" id="pills_conta_poupanca" role="tabpanel" aria-labelledby="pills_conta_poupanca_tab">
               teste 02
@@ -82,6 +79,7 @@ import SubGrupo from '../SubGrupo/SubGrupo'
 import Grupo from '../Grupo/Grupo'
 import Lancamento from '../Lancamento/Lancamento'
 import ListaLancto from '../Lancamento/ListaLancto'
+import GrafContaCorrente from './Graficos/GrafContaCorrente'
 
 export default {
   name: 'Dashboard',
@@ -117,7 +115,8 @@ export default {
     CadastroSubGrupo: SubGrupo,
     CadastroGrupo: Grupo,
     Lancamento: Lancamento,
-    ListaLancto: ListaLancto
+    ListaLancto: ListaLancto,
+    GrafContaCorrente: GrafContaCorrente
   }
 }
 </script>

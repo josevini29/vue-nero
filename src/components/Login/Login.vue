@@ -13,7 +13,7 @@
                             <form class="form">
                                 <div class="form-group">
                                     <label for="uname1">E-mail</label>
-                                    <input type="text" class="form-control form-control-lg rounded-0" v-model="email" required>
+                                    <input type="email" class="form-control form-control-lg rounded-0" v-model="email" required>
                                     <div class="invalid-feedback">Oops, you missed this one.</div>
                                 </div>
                                 <div class="form-group">
