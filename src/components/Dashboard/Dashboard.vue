@@ -1,5 +1,9 @@
 <template>
   <div>
+    <div class="progress" v-if="usuario._id === undefined">
+      <div class="progress-bar progress-bar-striped progress-bar-animated bg-info" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">Carregando...</div>
+    </div>
+    <div v-else>
     <div>
       <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <a class="navbar-brand" href="">Dashboard</a>
@@ -21,7 +25,16 @@
               <a class="nav-link" data-toggle="modal" data-target="#modalCadGrupo">Grupo</a>
             </li>
           </ul>
-          <button class="btn btn-outline-info my-2 my-sm-0" @click="encerrarSessao">Sair</button>
+          <div class="btn-group">
+            <button type="button" class="btn btn-success btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+             {{this.usuario.name}}
+            </button>
+            <div class="dropdown-menu dropdown-menu-right">
+              <button  class="dropdown-item" type="button">Alterar Senha</button >
+              <div class="dropdown-divider"></div>
+              <button  class="dropdown-item" type="button" @click="encerrarSessao">Sair</button >
+            </div>
+          </div>
         </div>
       </nav>
     </div>
@@ -50,73 +63,56 @@
         <div class="col-sm">
           <div class="tab-content" id="pills-tabContent">
             <div class="tab-pane fade show active" id="pills_conta_corrente" role="tabpanel" aria-labelledby="pills_conta_corrente_tab">
-              <GrafContaCorrente />
+              <!-- <GrafContaCorrente /> -->
             </div>
             <div class="tab-pane fade" id="pills_conta_poupanca" role="tabpanel" aria-labelledby="pills_conta_poupanca_tab">
               teste 02
             </div>
             <div class="tab-pane fade" id="pills_lancamento" role="tabpanel" aria-labelledby="pills_lancamento_tab">
-              <ListaLancto />
+               <!-- <ListaLancto /> -->
             </div>
           </div>
         </div>
       </div>
     </div>
-    <CadastroBanco />
-    <CadastroConta />
-    <CadastroSubGrupo />
-    <CadastroGrupo />
-    <Lancamento />
+    </div>
   </div>
 </template>
 
 <script>
 
-import * as firebase from 'firebase'
-import Banco from '../Banco/Banco'
-import Conta from '../Conta/Conta'
-import SubGrupo from '../SubGrupo/SubGrupo'
-import Grupo from '../Grupo/Grupo'
-import Lancamento from '../Lancamento/Lancamento'
-import ListaLancto from '../Lancamento/ListaLancto'
-import GrafContaCorrente from './Graficos/GrafContaCorrente'
+import { obterUsuario } from '../../Controllers/ControllerUser'
+import Redirecionar from '../Util/Redirecionar'
+import Token from '../../Api/Token'
 
 export default {
   name: 'Dashboard',
   data () {
     return {
-      msg: 'Welcome to Your Vue.js App'
+      usuario: {}
     }
   },
   methods: {
-    validarSessao: function () {
-      var user = firebase.auth().currentUser
-      if (!user) {
-        this.$router.push('login')
-      }
+    encerrarSessao: function () {
+      console.log('Encerrando sessão...')
+      this.usuario = {}
+      Token.removerToken()
+      Redirecionar.login()
     },
-    encerrarSessao: function (event) {
-      if (event) {
-        firebase.auth().signOut().then(() => {
-          console.log('Sessão encerrada!')
-          this.$router.push('login')
-        }).catch(() => {
-          console.log('Erro ao encerrar sessão!')
-        })
+    iniciarSessao: async function () {
+      try {
+        console.log('Obtendo usuário...')
+        this.usuario = await obterUsuario()
+        console.log('Usuário obtido...')
+      } catch (error) {
+        this.$toasted.show(`${error.code} - ${error.message}`)
+        Redirecionar.login()
       }
     }
   },
   beforeMount () {
-    this.validarSessao()
-  },
-  components: {
-    CadastroBanco: Banco,
-    CadastroConta: Conta,
-    CadastroSubGrupo: SubGrupo,
-    CadastroGrupo: Grupo,
-    Lancamento: Lancamento,
-    ListaLancto: ListaLancto,
-    GrafContaCorrente: GrafContaCorrente
+    console.log('Dashboard')
+    this.iniciarSessao()
   }
 }
 </script>

@@ -1,11 +1,13 @@
 import Vue from 'vue'
 import * as firebase from 'firebase'
 import VueRouter from 'vue-router'
+import Toasted from 'vue-toasted'
 
 import Login from './components/Login/Login'
 import Dashboard from './components/Dashboard/Dashboard'
 
 Vue.use(VueRouter)
+Vue.use(Toasted, {duration: 3000, position: 'bottom-center'})
 /* eslint-disable no-new */
 
 var config = {
