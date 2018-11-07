@@ -16,7 +16,7 @@
                   <div class="row centered">
                     <div class="form-group mx-sm-3 mb-2">
                       <label for="cod_banco" class="sr-only">Cód. Banco</label>
-                      <input type="text" class="form-control" id="cod_banco" placeholder="Cód. Banco" v-model="codBanco"/>
+                      <input type="text" class="form-control" id="cod_banco" placeholder="Cód. Banco" v-model="codBanco" autofocus/>
                     </div>
                     <div class="form-group mx-sm-3 mb-2">
                       <label for="desc_banco" class="sr-only">Nome Banco</label>

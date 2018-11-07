@@ -5,6 +5,10 @@ import Toasted from 'vue-toasted'
 
 import Login from './components/Login/Login'
 import Dashboard from './components/Dashboard/Dashboard'
+import Route from './Api/Route'
+
+console.log(`Environment: ${process.env.NODE_ENV}`)
+console.log(`API: ${Route.api}`)
 
 Vue.use(VueRouter)
 Vue.use(Toasted, {duration: 3000, position: 'bottom-center'})

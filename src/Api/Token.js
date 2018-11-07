@@ -1,14 +1,27 @@
 export default {
-  guardarToken (token) {
-    console.log('Token gerado')
-    window.localStorage.setItem('token_nero', token)
+  guardarToken (token, lembrar) {
+    this.removerToken()
+    if (lembrar) {
+      window.localStorage.setItem('token-nero', token)
+    } else {
+      window.sessionStorage.setItem('token-nero', token)
+    }
   },
   removerToken () {
     console.log('Token removido')
-    window.localStorage.removeItem('token_nero')
+    window.localStorage.removeItem('token-nero')
+    window.sessionStorage.removeItem('token-nero')
   },
   obterToken () {
-    return window.localStorage.getItem('token_nero') || ''
+    let token = null
+    let tokenLocal = window.localStorage.getItem('token-nero')
+    let tokenSession = window.sessionStorage.getItem('token-nero')
+    if (tokenLocal) {
+      token = tokenLocal
+    } else if (tokenSession) {
+      token = tokenSession
+    }
+    return token || ''
   },
   obterTokenHeader () {
     return {'Authorization': 'bearer ' + this.obterToken()}

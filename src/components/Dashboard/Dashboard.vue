@@ -1,7 +1,7 @@
 <template>
   <div>
-    <div class="progress" v-if="usuario._id === undefined">
-      <div class="progress-bar progress-bar-striped progress-bar-animated bg-info" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">Carregando...</div>
+    <div class="loader-body" v-if="usuario._id === undefined">
+      <Loader />
     </div>
     <div v-else>
     <div>
@@ -82,6 +82,7 @@
 
 <script>
 
+import Loader from '../Adicional/Loader'
 import { obterUsuario } from '../../Controllers/ControllerUser'
 import Redirecionar from '../Util/Redirecionar'
 import Token from '../../Api/Token'
@@ -121,7 +122,8 @@ export default {
     this.iniciarSessao()
   },
   components: {
-    Banco
+    Banco,
+    Loader
   }
 }
 </script>

@@ -1,5 +1,5 @@
 import axios from 'axios'
-import EndPoint from '../Api/EntPoint'
+import Route from '../Api/Route'
 import Token from '../Api/Token'
 
 export async function obterUsuario () {
@@ -10,7 +10,7 @@ export async function obterUsuario () {
   try {
     let response = await axios({
       method: 'get',
-      url: `${EndPoint.url}${EndPoint.user.get}`,
+      url: `${Route.user.get}`,
       headers: Token.obterTokenHeader()
     })
     return response.data.user

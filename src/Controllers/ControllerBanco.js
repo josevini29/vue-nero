@@ -1,6 +1,6 @@
 import axios from 'axios'
-import EndPoint from '../Api/EntPoint'
 import Token from '../Api/Token'
+import Route from '../Api/Route'
 
 export async function editarBanco (banco) {
   if (Token.obterToken() === '') {
@@ -12,7 +12,7 @@ export async function editarBanco (banco) {
     if (banco._id === undefined) {
       response = await axios({
         method: 'post',
-        url: `${EndPoint.url}${EndPoint.bank.post}`,
+        url: Route.bank.post,
         data: banco,
         headers: Token.obterTokenHeader()
       })
@@ -21,7 +21,7 @@ export async function editarBanco (banco) {
       banco._id = undefined
       response = await axios({
         method: 'put',
-        url: `${EndPoint.url}${EndPoint.bank.put}${idBanco}`,
+        url: `${Route.bank.put}${idBanco}`,
         data: banco,
         headers: Token.obterTokenHeader()
       })
@@ -41,7 +41,7 @@ export async function obterBancos () {
   try {
     let response = await axios({
       method: 'get',
-      url: `${EndPoint.url}${EndPoint.bank.get}`,
+      url: Route.bank.get,
       headers: Token.obterTokenHeader()
     })
     return response.data.banks
@@ -59,7 +59,7 @@ export async function deletarBanco (banco) {
     let idBanco = banco._id
     let response = await axios({
       method: 'delete',
-      url: `${EndPoint.url}${EndPoint.bank.delete}${idBanco}`,
+      url: `${Route.bank.delete}${idBanco}`,
       headers: Token.obterTokenHeader()
     })
 
