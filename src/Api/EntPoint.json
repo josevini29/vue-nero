@@ -1,10 +1,16 @@
 {
-    "url": "http://localhost:3000",
+    "url": "git ",
     "auth": {
         "register": "/auth/register",
         "authenticate": "/auth/authenticate"
     },
     "user": {
         "get": "/user"
+    },
+    "bank": {
+        "get": "/bank",
+        "post": "/bank",
+        "put": "/bank/",
+        "delete": "/bank/"
     }
 }

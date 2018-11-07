@@ -9,7 +9,8 @@
     "start": "npm run dev",
     "lint": "eslint --ext .js,.vue src",
     "build": "node build/build.js",
-    "deploy": "echo Gerando Build && npm run build && echo Gerando Deploy Firebase && firebase deploy"
+    "deploy": "echo Gerando Build && npm run build && echo Gerando Deploy Firebase && firebase deploy",
+    "github": "echo git add . && git add . && echo git commit && git commit -m \"Beta\" && echo git push && git push origin master"
   },
   "dependencies": {
     "axios": "^0.18.0",

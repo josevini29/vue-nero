@@ -1,139 +1,145 @@
 <template>
-  <div class="modal fade" id="modalCadBanco" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Cadastro de Bancos</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <div class="form-inline novo_banco breadcrumb">
-            <div class="row centered">
-              <div class="form-group mx-sm-3 mb-2">
-                <label for="desc_banco" class="sr-only">Nome Banco</label>
-                <input type="hidden" v-model="idBanco"/>
-                <input type="text" class="form-control" id="desc_banco" placeholder="Informe o Banco" v-model="dsBanco"/>
+  <div v-if="inShow">
+    <transition name="modal">
+      <div class="modal-mask">
+        <div class="modal-wrapper">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Cadastro de Bancos</h5>
+                <button type="button" class="close" aria-label="Fechar" @click="show">
+                  <span aria-hidden="true">&times;</span>
+                </button>
               </div>
-              <button class="btn btn-primary mb-2" @click="salvarBanco">Salvar</button>
+              <div class="modal-body">
+                <div class="form-inline novo_banco breadcrumb">
+                  <div class="row centered">
+                    <div class="form-group mx-sm-3 mb-2">
+                      <label for="cod_banco" class="sr-only">Cód. Banco</label>
+                      <input type="text" class="form-control" id="cod_banco" placeholder="Cód. Banco" v-model="codBanco"/>
+                    </div>
+                    <div class="form-group mx-sm-3 mb-2">
+                      <label for="desc_banco" class="sr-only">Nome Banco</label>
+                      <input type="text" class="form-control" id="desc_banco" placeholder="Nome Banco" v-model="nmBanco"/>
+                    </div>
+                    <button class="btn btn-primary mb-2" @click="salvarBanco"><i class="fas fa-save"></i></button>
+                    <button class="btn btn-secondary mb-2" id="bt_cancelar" v-if="inEdicao" @click="limparAlteracao"><i class="fas fa-times"></i></button>
+                  </div>
+                </div>
+                <table class="tabela">
+                  <tr v-for="(banco, index) in bancos" v-bind:key="index">
+                    <td class="lista">
+                    {{ banco.code }} - {{ banco.name }}
+                    </td>
+                    <td class="lista">
+                      <button type="button" class="btn btn-warning botao" @click="alterarBanco(banco)"><i class="fas fa-edit"></i></button>
+                      <button type="button" class="btn btn-danger botao" @click="deletarBanco(banco)"><i class="fas fa-trash-alt"></i></button>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" @click="show">Cancelar</button>
+              </div>
             </div>
           </div>
-          <table class="tabela">
-            <tr v-for="(banco, index) in bancos" v-bind:key="index">
-              <td class="lista">
-                {{ banco.ds_banco }}
-              </td>
-              <td class="lista">
-                <button type="button" class="btn btn-warning botao" @click="alterarBanco(banco.id_banco, banco.ds_banco)"><i class="fas fa-edit"></i></button>
-                <button type="button" class="btn btn-danger botao" @click="deletarBanco(banco.id_banco, banco.ds_banco)"><i class="fas fa-trash-alt"></i></button>
-              </td>
-            </tr>
-          </table>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
         </div>
       </div>
-    </div>
+    </transition>
   </div>
 </template>
 
 <script>
 
-import * as firebase from 'firebase'
+import Redirecionar from '../Util/Redirecionar'
+import { obterBancos, editarBanco, deletarBanco } from '../../Controllers/ControllerBanco'
 
 export default {
   name: 'Banco',
   data () {
     return {
-      db: firebase.firestore(),
       bancos: [],
       idBanco: '',
-      dsBanco: ''
+      codBanco: '',
+      nmBanco: '',
+      inEdicao: false,
+      inShow: false
     }
   },
   methods: {
-    validarSessao: function () {
-      var user = firebase.auth().currentUser
-      if (!user) {
-        this.$router.push('login')
+    show: function () {
+      this.inShow = !this.inShow
+      if (this.inShow) {
+        this.carregarBancos()
       }
     },
-    carregarBancos: function () {
-      var arrayBanco = []
-      const settings = {timestampsInSnapshots: true}
-      this.db.settings(settings)
-      this.db.collection('banco').get().then((snapshot) => {
-        snapshot.forEach(doc => {
-          const banco = {
-            id_banco: doc.id,
-            ds_banco: doc.data().ds_banco
-          }
-          arrayBanco.push(banco)
-        })
-        this.bancos = arrayBanco
-      }).catch((error) => {
-        alert(`${error.code}: ${error.message}`)
-        this.$router.push('login')
-      })
+    carregarBancos: async function () {
+      try {
+        this.bancos = await obterBancos()
+      } catch (error) {
+        this.$toasted.show(`${error.code} - ${error.message}`)
+        Redirecionar.login(error.code)
+      }
     },
-    salvarBanco: function (event) {
+    salvarBanco: async function (event) {
       if (event) {
-        if (this.dsBanco === '') {
-          alert('Informe o nome do banco!')
-        } else {
-          if (this.idBanco === '') {
-            this.db.collection('banco').add({
-              ds_banco: this.dsBanco
-            }).then(() => {
-              console.log('Registro salvo com sucesso!')
-              this.carregarBancos()
-            }).catch((error) => {
-              alert('Erro ao salvar registro!', error)
-            })
-          } else {
-            this.db.collection('banco').doc(this.idBanco).set({
-              ds_banco: this.dsBanco
-            }).then(() => {
-              console.log('Registro alterado com sucesso!')
-              this.carregarBancos()
-            }).catch((error) => {
-              alert('Erro ao alterar registro!', error)
-            })
-          }
+        if (this.codBanco === '') {
+          this.$toasted.show('Informe o código do banco!')
+          return
         }
-        this.idBanco = ''
-        this.dsBanco = ''
+
+        if (this.nmBanco === '') {
+          this.$toasted.show('Informe o nome do banco!')
+          return
+        }
+
+        try {
+          let banco = {
+            code: this.codBanco, name: this.nmBanco
+          }
+          if (this.idBanco !== '') {
+            banco = { ...banco, _id: this.idBanco }
+          }
+          await editarBanco(banco)
+          this.limparAlteracao()
+          this.carregarBancos()
+        } catch (error) {
+          this.$toasted.show(`${error.code} - ${error.message}`)
+          Redirecionar.login(error.code)
+        }
       }
     },
-    alterarBanco: function (idBanco, dsBanco) {
-      if (idBanco) {
-        this.idBanco = idBanco
-        this.dsBanco = dsBanco
+    alterarBanco: function (banco) {
+      if (banco) {
+        this.idBanco = banco._id
+        this.codBanco = banco.code
+        this.nmBanco = banco.name
+        this.inEdicao = true
       }
     },
-    deletarBanco: function (idBanco, dsBanco) {
-      if (!idBanco) {
-        alert('Erro id do documento não foi repassado para deleção!')
+    limparAlteracao: function () {
+      this.idBanco = ''
+      this.codBanco = ''
+      this.nmBanco = ''
+      this.inEdicao = false
+    },
+    deletarBanco: async function (banco) {
+      if (!banco._id) {
+        this.$toasted.show('Erro id do documento não foi repassado para deleção!')
         return
       }
 
-      var result = confirm('Deseja realmente deletar "' + dsBanco + '"?')
+      var result = confirm(`Deseja realmente deletar "${banco.code} - ${banco.name}"?`)
       if (result === true) {
-        this.db.collection('banco').doc(idBanco).delete().then(() => {
-          console.log('Registro deletado com sucesso!')
+        try {
+          await deletarBanco(banco)
           this.carregarBancos()
-        }).catch((error) => {
-          console.log(error)
-          alert('Erro ao deletar registro!', error)
-        })
+        } catch (error) {
+          this.$toasted.show(`${error.code} - ${error.message}`)
+          Redirecionar.login(error.code)
+        }
       }
     }
-  },
-  beforeMount () {
-    this.validarSessao()
-    this.carregarBancos()
   }
 }
 </script>
@@ -161,6 +167,23 @@ export default {
   .centered {
     margin: 0 auto !important;
     float: none !important;
+  }
+
+  .modal-mask {
+    position: fixed;
+    z-index: 9998;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, .5);
+    display: table;
+    transition: opacity .3s ease;
+  }
+
+  .modal-wrapper {
+    display: table-cell;
+    vertical-align: middle;
   }
 
 </style>

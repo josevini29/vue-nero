@@ -13,7 +13,7 @@
         <div class="collapse navbar-collapse" id="corNavbar01">
           <ul class="navbar-nav mr-auto">
             <li class="nav-item">
-              <a class="nav-link" data-toggle="modal" data-target="#modalCadBanco">Bancos</a>
+              <a class="nav-link" data-toggle="modal" data-target="#modalCadBanco" @click="showModal('Banco')">Bancos</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" data-toggle="modal" data-target="#modalCadConta">Contas</a>
@@ -27,7 +27,7 @@
           </ul>
           <div class="btn-group">
             <button type="button" class="btn btn-success btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-             {{this.usuario.name}}
+             <i class="far fa-user"></i> {{this.usuario.name}}
             </button>
             <div class="dropdown-menu dropdown-menu-right">
               <button  class="dropdown-item" type="button">Alterar Senha</button >
@@ -75,6 +75,7 @@
         </div>
       </div>
     </div>
+    <Banco />
     </div>
   </div>
 </template>
@@ -84,6 +85,7 @@
 import { obterUsuario } from '../../Controllers/ControllerUser'
 import Redirecionar from '../Util/Redirecionar'
 import Token from '../../Api/Token'
+import Banco from '../Banco/Banco'
 
 export default {
   name: 'Dashboard',
@@ -106,13 +108,20 @@ export default {
         console.log('Usuário obtido...')
       } catch (error) {
         this.$toasted.show(`${error.code} - ${error.message}`)
-        Redirecionar.login()
+        Redirecionar.login(error.code)
       }
+    },
+    showModal: function (name) {
+      let modal = this.$children.find(comp => comp.$options.name === name)
+      modal.show()
     }
   },
   beforeMount () {
     console.log('Dashboard')
     this.iniciarSessao()
+  },
+  components: {
+    Banco
   }
 }
 </script>

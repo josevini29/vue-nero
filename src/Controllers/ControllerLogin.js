@@ -15,22 +15,6 @@ export async function validarLogin (email, senha) {
     Token.guardarToken(response.data.token)
     return response.data
   } catch (error) {
-    Token.removerToken()
-    throw new Exception(error.response.status, error.response.data)
-  }
-}
-
-export async function obterUsuario () {
-  try {
-    let response = await axios({
-      method: 'get',
-      url: `${EndPoint.url}${EndPoint.auth.user}`,
-      data: {},
-      headers: Token.obterTokenHeader()
-    })
-    return response.data.user
-  } catch (error) {
-    Token.removerToken()
     throw new Exception(error.response.status, error.response.data)
   }
 }

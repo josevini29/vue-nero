@@ -3,6 +3,10 @@ import EndPoint from '../Api/EntPoint'
 import Token from '../Api/Token'
 
 export async function obterUsuario () {
+  if (Token.obterToken() === '') {
+    throw new Exception('401', 'Usuário não logado')
+  }
+
   try {
     let response = await axios({
       method: 'get',
@@ -11,7 +15,6 @@ export async function obterUsuario () {
     })
     return response.data.user
   } catch (error) {
-    Token.removerToken()
     throw new Exception(error.response.status, error.response.data)
   }
 }
