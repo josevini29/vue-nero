@@ -1,34 +1,21 @@
 <template>
-<div class="container py-5">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="row">
-                <div class="col-md-6 mx-auto">
-                    <div class="card rounded-0">
-                        <div class="card-header">
-                            <h3 class="mb-0">Login</h3>
-                        </div>
-                        <div class="card-body">
-                            <form class="form">
-                                <div class="form-group">
-                                    <label for="uname1">E-mail</label>
-                                    <input type="email" class="form-control form-control-lg rounded-0" v-model="email" required>
-                                    <div class="invalid-feedback">Oops, you missed this one.</div>
-                                </div>
-                                <div class="form-group">
-                                    <label>Senha</label>
-                                    <input type="password" class="form-control form-control-lg rounded-0" autocomplete="new-password" v-model="senha" required>
-                                    <div class="invalid-feedback">Enter your password too!</div>
-                                </div>
-                                <button type="submit" class="btn btn-success btn-lg float-right" v-bind:disabled="!isValid" @click="efetuarLogin">Login</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+  <div class="bloco text-center">
+    <form class="form-signin">
+      <img class="mb-4" src="../../assets/bootstrap-solid.svg" alt="" width="72" height="72">
+      <h1 class="h3 mb-3 font-weight-normal">Login</h1>
+      <label for="inputEmail" class="sr-only">E-mail</label>
+      <input type="email" id="inputEmail" class="form-control" placeholder="Email" v-model="email" required autofocus>
+      <label for="inputPassword" class="sr-only">Senha</label>
+      <input type="password" id="inputPassword" class="form-control" placeholder="Senha" v-model="senha" required>
+      <div class="checkbox mb-3">
+        <label>
+          <input type="checkbox" value="remember-me"> Lembrar-me
+        </label>
+      </div>
+      <button class="btn btn-lg btn-primary btn-block" type="submit" v-bind:disabled="!isValid" @click="efetuarLogin">Entrar</button>
+      <p class="mt-5 mb-3 text-muted">&copy; 2018</p>
+    </form>
+  </div>
 </template>
 
 <script>
@@ -70,5 +57,49 @@ export default {
 </script>
 
 <style scoped>
+
+    html,.bloco {
+    height: 100%;
+    }
+
+    .bloco {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align: center;
+    align-items: center;
+    padding-top: 40px;
+    padding-bottom: 40px;
+    background-color: #f5f5f5;
+    }
+
+    .form-signin {
+    width: 100%;
+    max-width: 330px;
+    padding: 15px;
+    margin: auto;
+    }
+    .form-signin .checkbox {
+    font-weight: 400;
+    }
+    .form-signin .form-control {
+    position: relative;
+    box-sizing: border-box;
+    height: auto;
+    padding: 10px;
+    font-size: 16px;
+    }
+    .form-signin .form-control:focus {
+    z-index: 2;
+    }
+    .form-signin input[type="email"] {
+    margin-bottom: -1px;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+    }
+    .form-signin input[type="password"] {
+    margin-bottom: 10px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    }
 
 </style>
