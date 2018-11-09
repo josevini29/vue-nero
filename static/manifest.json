@@ -1,0 +1,15 @@
+{
+    "name": "Nero",
+    "short_name": "Nero",
+    "theme_color": "#343a40",
+    "background_color": "#343a40",
+    "display": "standalone",
+    "start_url": "/",
+    "icons": [
+      {
+        "src": "/static/logo.png",
+        "sizes": "72x72",
+        "type": "image/png"
+      }
+    ]
+  }

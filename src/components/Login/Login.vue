@@ -2,7 +2,7 @@
   <div class="bloco text-center">
     <loader v-if="carregando"/>
     <form class="form-signin" v-else>
-      <img class="mb-4" src="../../assets/bootstrap-solid.svg" alt="" width="72" height="72">
+      <img class="mb-4" src="../../assets/logo.png" alt="" width="170" height="170">
       <h1 class="h3 mb-3 font-weight-normal fonte-branca">Login</h1>
       <label for="inputEmail" class="sr-only">E-mail</label>
       <input type="email" id="inputEmail" class="form-control" placeholder="Email" v-model="email" required autofocus>
@@ -13,7 +13,7 @@
           <input type="checkbox" value="remember-me" v-model="lembrar"> Lembrar-me
         </label>
       </div>
-      <button class="btn btn-lg btn-primary btn-block" type="submit" v-bind:disabled="!isValid" @click="efetuarLogin">Entrar</button>
+      <button class="btn btn-lg btn-primary btn-block" type="submit" @click="efetuarLogin">Entrar</button>
       <p class="mt-5 mb-3 text-muted">&copy; 2018</p>
     </form>
   </div>
@@ -37,15 +37,18 @@ export default {
       carregando: true
     }
   },
-  computed: {
-    isValid: function () {
-      return this.email !== '' && this.senha !== ''
-    }
-  },
   methods: {
     efetuarLogin: async function (event) {
       if (event) {
         try {
+          if (this.email === '') {
+            this.$toasted.show('Informe o e-mail')
+            return
+          }
+          if (this.senha === '') {
+            this.$toasted.show('Informe a senha')
+            return
+          }
           event.preventDefault()
           console.log('Solicitando login...')
           await validarLogin(this.email, this.senha, this.lembrar)
