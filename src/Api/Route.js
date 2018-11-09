@@ -15,5 +15,11 @@ export default {
     post: `${api}/bank`,
     put: `${api}/bank/`,
     delete: `${api}/bank/`
+  },
+  account: {
+    get: `${api}/account`,
+    post: `${api}/account`,
+    put: `${api}/account/`,
+    delete: `${api}/account/`
   }
 }

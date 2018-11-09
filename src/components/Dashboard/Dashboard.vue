@@ -16,7 +16,7 @@
               <a class="nav-link" data-toggle="modal" data-target="#modalCadBanco" @click="showModal('Banco')">Bancos</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" data-toggle="modal" data-target="#modalCadConta">Contas</a>
+              <a class="nav-link" data-toggle="modal" data-target="#modalCadConta" @click="showModal('Conta')">Contas</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" data-toggle="modal" data-target="#modalCadSubGrupo">Sub-Grupo</a>
@@ -76,6 +76,7 @@
       </div>
     </div>
     <Banco />
+    <Conta />
     </div>
   </div>
 </template>
@@ -87,6 +88,7 @@ import { obterUsuario } from '../../Controllers/ControllerUser'
 import Redirecionar from '../Util/Redirecionar'
 import Token from '../../Api/Token'
 import Banco from '../Banco/Banco'
+import Conta from '../Conta/Conta'
 
 export default {
   name: 'Dashboard',
@@ -123,6 +125,7 @@ export default {
   },
   components: {
     Banco,
+    Conta,
     Loader
   }
 }
